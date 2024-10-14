@@ -19,3 +19,5 @@ Logica del dockerfile:
   5. /bin/bash/
 
 ## SCRIPT VALUTAZIONE HACKATHON
+
+# TODO..
