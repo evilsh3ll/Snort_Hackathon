@@ -80,9 +80,7 @@ build_hackathon_image (){
 install_lab_docker (){
   echo "${green}Environment setup${default}"
 
-  echo "${orange}Removing Docker's conflicting packages...${default}"
-  remove_conflicting_pkgs
-  echo "${green}Removed Docker's conflicting packages${default}"
+  
 
   echo "${orange}Installing Docker's apt repository${default}"
   setup_docker_repos
@@ -103,6 +101,22 @@ install_lab_docker (){
   echo "${green}Environment ready${default}"
 }
 
+confirm (){
+    if [[ $# -eq 1 ]]
+    then
+        echo "${red}$1${normal}"
+    fi
+    read -p "${orange}Sei sicuro di voler proseguire ?${normal} (y|n)" choice
+
+    if [[ $choice == "y" ]]
+    then
+        echo "${green}Conferma ottenuto, proseguo${normal}"
+        return 0
+    fi
+    echo "${orange}Conferma NON ottenuta, esco${normal}"
+    return -1
+}
+
 if [[ $# -ne 1 ]]
 then
       echo "${orange}Usage: ./hackathon-setup install/uninstall${default}"
@@ -111,6 +125,34 @@ fi
 
 # TODO
 # Switch Case Menu
+while true:
+do
+      echo "${green}Peparazione ambiente per Hackatlon Par-Tec${normal}"
+      echo "${orange}[Solo per PC del LAB Tor Vergata]${normal}"
+      echo "${orance}1)${normal} Configura ambiente completo ${orange}[Solo per LAb Tor Vergata]${normal}"
+      echo ""
+      echo "${orange}[Configurazione su PC personale]${normal}"
+      echo "${orance}2)${normal} Rimuovi eventuali pacchetti docker non compatibili"
+
+      case $choice in
+      "1")
+      ;;
+      "2")
+        confirm "Se hai docker gia' installato, questa opzione potrebbe eliminare pacchetti in uso"
+        if [[ $? -eq 0 ]]
+        then
+            echo "${orange}Rimuovo eventuali pacchetti docker non compatibili...${default}"
+            remove_conflicting_pkgs
+            echo "${green}Rimossi paccheti docker non compatibili${default}"
+        fi
+      ;;
+      "Q")
+        echo "${green}Ciao !${normal}"
+      *)
+        echo "${orange}Selezione non disponibile${normal}"
+        ;;
+
+done
 
 if [[ $1 == "install" ]]
 then
@@ -119,6 +161,6 @@ elif [[ $2 == "uninstall" ]]
 then
     uninstall_lab_docker
 else
-    echo "${orange}[Please select install or uninstall] Usage: ./hackathon-setup podman <install/uninstall>${default}"
+    echo "${orange}[Please select install or uninstall] Usage: ./hackathon-setup <install/uninstall>${default}"
     exit -1
 fi
