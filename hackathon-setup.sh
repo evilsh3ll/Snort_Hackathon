@@ -9,14 +9,26 @@ remove_docker_repos (){
   sudo rm /etc/apt/sources.list.d/docker.list
 }
 
-remove_hackatlon_image (){
-  sudo docker image rm hackathon:latest -f
+
+remove_sudoers (){
+  sudo rm /etc/sudoers.d/hackathon
   if [[ $? -ne 0 ]]
   then
-        echo "${red}Errore nella rimozione dell'immagine per l'hackatlon${default}"
+        echo "${red}Errore: sudoers file /etc/sudoers.d/hackathon NON rimosso${default}"
         exit -1
   fi
 }
+
+
+remove_hackathon_image (){
+  sudo docker image rm hackathon:latest -f
+  if [[ $? -ne 0 ]]
+  then
+        echo "${red}Errore nella rimozione dell'immagine per l'hackathon${default}"
+        exit -1
+  fi
+}
+
 
 remove_docker (){
   sudo apt-get remove docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
@@ -27,20 +39,24 @@ remove_docker (){
   fi
 }
 
+
 remove_lab (){
-  echo "${green}Avvio rimozione completa ambiente hackatlon${default}"
+  echo "${green}Avvio rimozione completa ambiente hackathon${default}"
 
   echo "${orange}Rimozione repository apt di docker${default}"
   remove_docker_repos
   echo "${green}Reposotory docker rimossi${default}"
-  echo "${orange}Rimozione dell'immagine docker per hackatlon${default}"
-  remove_hackatlon_image
-  echo "${green}Immagine hackatlon rimossa${default}"
+  echo "${orange}Rimozione dell'immagine docker per hackathon${default}"
+  remove_hackathon_image
+  echo "${green}Immagine hackathon rimossa${default}"
   echo "${orange}Disinstallazione Docker${default}"
   remove_docker
   echo "${green}Docker disinstallato${default}"
+  echo "${orange}Rimozione sudoers per docker${default}"
+  remove_sudoers
+  echo "${green}Rimosso sudoers${default}"
 
-  echo "${green}Ambiente hackatlon rimosso${default}"
+  echo "${green}Ambiente hackathon rimosso${default}"
 }
 
 
@@ -98,6 +114,16 @@ install_docker (){
 }
 
 
+add_sudoers (){
+    sudo --preserve-env=USER echo "${USER} ALL=(root) NOPASSWD: sudo docker run -it hackathon:latest" > /etc/sudoers.d/hackathon
+    if [[ $? -ne 0 ]]
+    then
+          echo "${red}Errore: sudoers file /etc/sudoers.d/hackathon NON creato${default}"
+          exit -1
+    fi
+}
+
+
 test_docker (){
 
   sudo docker run hello-world
@@ -109,16 +135,16 @@ test_docker (){
 }
 
 
-build_hackatlon_image (){
+build_hackathon_image (){
 
-  sudo docker build -t hackatlon:latest .
+  sudo docker build -t hackathon:latest .
   if [[ $? -ne 0 ]]
   then
-        echo "${red}Errore nella build dell'immagine per l'hackatlon${default}"
+        echo "${red}Errore nella build dell'immagine per l'hackathon${default}"
         exit -1
   fi
 
-  echo "${green}Accedi al container per l'hackatlon con: sudo docker -it hackatlon:latest${default}"
+  echo "${green}Accedi al container per l'hackathon con: sudo docker run -it hackathon:latest${default}"
 }
 
 
@@ -137,9 +163,12 @@ install_lab_docker (){
   echo "${orange}Verifica funzionamento Docker${default}"
   test_docker
   echo "${green}Docker funziona${default}"
-  echo "${orange}Build dell'immagine docker per hackatlon${default}"
-  build_hackatlon_image
+  echo "${orange}Build dell'immagine docker per hackathon${default}"
+  build_hackathon_image
   echo "${green}Build completa${default}"
+  echo "${orange}Aggiunta sudoers per docker${default}"
+  add_sudoers
+  echo "${green}Creato sudoers${default}"
   echo "${green}Ambiente pronto${default}"
 }
 
@@ -166,13 +195,13 @@ menu_remove (){
   while true
   do
         echo "---------------------RIMOZIONE------------------------------"
-        echo "${green}Rimozione ambiente per Hackatlon Par-Tec${default}"
+        echo "${green}Rimozione ambiente per hackathon Par-Tec${default}"
         echo "${orange}[Solo per PC del LAB Tor Vergata o PC ocnfigurati con setep 1)] (esegue gli step dal 2 al 4)${default}"
-        echo "${orance}1)${default} Rimuovi ambiente hackatlon${orange}${default}"
+        echo "${orance}1)${default} Rimuovi ambiente hackathon${orange}${default}"
         echo ""
         echo "${orange}[Configurazione su PC personale]${default}"
         echo "${orance}2)${default} Rimuovi repository Docker"
-        echo "${orance}3)${default} Rimuovi immagine hackatlon"
+        echo "${orance}3)${default} Rimuovi immagine hackathon"
         echo "${orance}4)${default} Rimuovi Docker"
         echo "------------------------------------------------------------"
         echo "${orance}Q)${default} Esci"
@@ -181,7 +210,7 @@ menu_remove (){
 
         case $choice in
         "1" )
-          confirm "Se avevi docker gia' installato prima di questo hackatlon, questa opzione ELIMINARA' COMPLETAMENTE le tue configurazioni"
+          confirm "Se avevi docker gia' installato prima di questo hackathon, questa opzione ELIMINARA' COMPLETAMENTE le tue configurazioni"
           if [[ $? -eq 0 ]]
           then
               echo "${orange}Rimozione dell'ambiente docker${default}"
@@ -195,9 +224,9 @@ menu_remove (){
           echo "${green}Reposotory docker rimossi${default}"
           ;;
         "3" )
-          echo "${orange}Rimozione dell'immagine docker per hackatlon${default}"
-          remove_hackatlon_image
-          echo "${green}Immagine hackatlon rimossa${default}"
+          echo "${orange}Rimozione dell'immagine docker per hackathon${default}"
+          remove_hackathon_image
+          echo "${green}Immagine hackathon rimossa${default}"
           ;;
         "4" )
           echo "${orange}Disinstallazione Docker${default}"
@@ -220,7 +249,7 @@ menu_install (){
   while true
   do
         echo "---------------------INSTALLAZIONE---------------------------"
-        echo "${green}Peparazione ambiente per Hackatlon Par-Tec${default}"
+        echo "${green}Peparazione ambiente per hackathon Par-Tec${default}"
         echo "${orange}[Solo per PC del LAB Tor Vergata o PC senza docker] (esegue gli step dal 2 al 6)${default}"
         echo "${orance}1)${default} Configura ambiente completo ${orange}${default}"
         echo ""
@@ -229,7 +258,7 @@ menu_install (){
         echo "${orance}3)${default} Aggiunta repository Docker"
         echo "${orance}4)${default} Installazione Docker"
         echo "${orance}5)${default} Verifica funzionamento Docker"
-        echo "${orance}6)${default} Build immagine Docker per l'hackatlon"
+        echo "${orance}6)${default} Build immagine Docker per l'hackathon"
         echo "------------------------------------------------------------"
         echo "${orance}Q)${default} Esci"
         echo ""
@@ -270,8 +299,8 @@ menu_install (){
           echo "${green}Docker funziona${default}"
           ;;
         "6" )
-          echo "${orange}Build dell'immagine docker per hackatlon${default}"
-          build_hackatlon_image
+          echo "${orange}Build dell'immagine docker per hackathon${default}"
+          build_hackathon_image
           echo "${green}Build completa${default}"
           ;;
         "Q" )
@@ -288,7 +317,7 @@ menu_install (){
 
 if [[ $# -ne 1 ]]
 then
-      echo "${orange}Uso: ./hackatlon-setup install/remove${default}"
+      echo "${orange}Uso: ./hackathon-setup install/remove${default}"
       exit -1
 fi
 if [[ $1 == "install" ]]
@@ -304,6 +333,6 @@ elif [[ $1 == "autoremove" ]]
 then
     remove_lab
 else
-    echo "${orange}[Seleziona 'install' o 'remove'] Usage: ./hackatlon-setup <install/remove>${default}"
+    echo "${orange}[Seleziona 'install' o 'remove'] Usage: ./hackathon-setup <install/remove>${default}"
     exit -1
 fi

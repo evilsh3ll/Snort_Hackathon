@@ -7,7 +7,7 @@ RUN apt install snort -y
 # Installing LAB dependencies
 # TODO...
 
-# Copying hackatlon evaluation script
+# Copying hackathon evaluation script
 # TODO...
 
 # Testing installation
