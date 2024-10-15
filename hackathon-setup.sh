@@ -113,7 +113,7 @@ build_hackathon_image (){
             echo "${red}Error encountered while building hackathon image${normal}"
             exit -1
       fi
-      echo "${green}Access your LAb environment with: sudo podman --privileged -it hackathon:latest${normal}"
+      echo "${green}Access your LAb environment with: sudo podman run --privileged -it hackathon:latest${normal}"
   elif [[ $1 == "docker" ]]
   then
       mv ./Containerflie ./Dockerfile 2>/dev/null
@@ -123,7 +123,7 @@ build_hackathon_image (){
             echo "${red}Error encountered while building hackathon image${normal}"
             exit -1
       fi
-      echo "${green}Access your LAb environment with: sudo docker -it hackathon:latest${normal}"
+      echo "${green}Access your LAb environment with: sudo docker run -it hackathon:latest${normal}"
   fi
 }
 
