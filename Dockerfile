@@ -1,8 +1,8 @@
-FROM ubuntu:24.04.1
+FROM ubuntu:24.04
 
 # Installing SNORT dependencies
-RUN apt get update
-RUN apt get install snort -y
+RUN apt update
+RUN apt install snort -y
 
 # Installing LAB dependencies
 # TODO...
