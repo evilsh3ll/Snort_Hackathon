@@ -11,10 +11,10 @@ remove_docker_repos (){
 
 
 remove_sudoers (){
-  sudo rm /etc/sudoers.d/hackathon
+  sudo rm /etc/sudoers.d/sudoers_hackathon
   if [[ $? -ne 0 ]]
   then
-        echo "${red}Errore: sudoers file /etc/sudoers.d/hackathon NON rimosso${default}"
+        echo "${red}Errore: sudoers file /etc/sudoers.d/sudoers_hackathon NON rimosso${default}"
         exit -1
   fi
 }
@@ -115,10 +115,10 @@ install_docker (){
 
 
 add_sudoers (){
-    sudo --preserve-env=USER echo "${USER} ALL=(root) NOPASSWD: sudo docker run -it hackathon:latest" > /etc/sudoers.d/hackathon
+    echo "${USER} ALL=(root) NOPASSWD: /usr/bin/docker run -it hackathon\:latest" > /tmp/sudoers_hackathon && sudo mv /tmp/sudoers_hackathon /etc/sudoers.d/sudoers_hackathon && chmod 440 /etc/sudoers.d/sudoers_hackathon && chown root:root /etc/sudoers.d/sudoers_hackathon
     if [[ $? -ne 0 ]]
     then
-          echo "${red}Errore: sudoers file /etc/sudoers.d/hackathon NON creato${default}"
+          echo "${red}Errore: sudoers file /etc/sudoers.d/sudoers_hackathon NON creato${default}"
           exit -1
     fi
 }
@@ -336,3 +336,5 @@ else
     echo "${orange}[Seleziona 'install' o 'remove'] Usage: ./hackathon-setup <install/remove>${default}"
     exit -1
 fi
+
+# In lab lanciare con "sudo --preserve-env=USER /tmp/hackathon-setup.sh autoinstall"
