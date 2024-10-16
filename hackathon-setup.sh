@@ -11,11 +11,10 @@ remove_docker_repos (){
 
 
 remove_sudoers (){
-  sudo rm /etc/sudoers.d/sudoers_hackathon
-  if [[ $? -ne 0 ]]
+  sudo rm /etc/sudoers.d/sudoers_hackathon 2>/dev/null
+  if [[ $? -eq 0 ]]
   then
-        echo "${red}Errore: sudoers file /etc/sudoers.d/sudoers_hackathon NON rimosso${default}"
-        exit -1
+        echo "${green}Rimosso sudoers per docker${default}"
   fi
 }
 
@@ -52,9 +51,7 @@ remove_lab (){
   echo "${orange}Disinstallazione Docker${default}"
   remove_docker
   echo "${green}Docker disinstallato${default}"
-  echo "${orange}Rimozione sudoers per docker${default}"
   remove_sudoers
-  echo "${green}Rimosso sudoers${default}"
 
   echo "${green}Ambiente hackathon rimosso${default}"
 }
@@ -115,7 +112,7 @@ install_docker (){
 
 
 add_sudoers (){
-    echo "${USER} ALL=(root) NOPASSWD: /usr/bin/docker run -it hackathon\:latest" > /tmp/sudoers_hackathon && sudo mv /tmp/sudoers_hackathon /etc/sudoers.d/sudoers_hackathon && chmod 440 /etc/sudoers.d/sudoers_hackathon && chown root:root /etc/sudoers.d/sudoers_hackathon
+    sudo echo "${1} ALL=(root) NOPASSWD: /usr/bin/docker run -it hackathon\:latest" > /tmp/sudoers_hackathon && sudo mv /tmp/sudoers_hackathon /etc/sudoers.d/sudoers_hackathon && chmod 440 /etc/sudoers.d/sudoers_hackathon && chown root:root /etc/sudoers.d/sudoers_hackathon
     if [[ $? -ne 0 ]]
     then
           echo "${red}Errore: sudoers file /etc/sudoers.d/sudoers_hackathon NON creato${default}"
@@ -166,9 +163,12 @@ install_lab_docker (){
   echo "${orange}Build dell'immagine docker per hackathon${default}"
   build_hackathon_image
   echo "${green}Build completa${default}"
-  echo "${orange}Aggiunta sudoers per docker${default}"
-  add_sudoers
-  echo "${green}Creato sudoers${default}"
+  echo "${orange}Aggiunta sudoers per docker per l'utente ${1}${default}"
+  if [[ $1 != "" ]]
+  then
+      add_sudoers $1
+      echo "${green}Creato sudoers${default}"
+  fi
   echo "${green}Ambiente pronto${default}"
 }
 
@@ -196,10 +196,10 @@ menu_remove (){
   do
         echo "---------------------RIMOZIONE------------------------------"
         echo "${green}Rimozione ambiente per hackathon Par-Tec${default}"
-        echo "${orange}[Solo per PC del LAB Tor Vergata o PC ocnfigurati con setep 1)] (esegue gli step dal 2 al 4)${default}"
+        echo "${orange}[Solo per PC configurati con setep 1 dell'INSTALLAZIONE)] (esegue gli step dal 2 al 4)${default}"
         echo "${orance}1)${default} Rimuovi ambiente hackathon${orange}${default}"
         echo ""
-        echo "${orange}[Configurazione su PC personale]${default}"
+        echo "${orange}[Singole Azioni di Rimozione]${default}"
         echo "${orance}2)${default} Rimuovi repository Docker"
         echo "${orance}3)${default} Rimuovi immagine hackathon"
         echo "${orance}4)${default} Rimuovi Docker"
@@ -250,10 +250,10 @@ menu_install (){
   do
         echo "---------------------INSTALLAZIONE---------------------------"
         echo "${green}Peparazione ambiente per hackathon Par-Tec${default}"
-        echo "${orange}[Solo per PC del LAB Tor Vergata o PC senza docker] (esegue gli step dal 2 al 6)${default}"
+        echo "${orange}[Solo per PC senza docker] (esegue gli step dal 2 al 6)${default}"
         echo "${orance}1)${default} Configura ambiente completo ${orange}${default}"
         echo ""
-        echo "${orange}[Configurazione su PC personale]${default}"
+        echo "${orange}[Singole Azioni di Installazione]${default}"
         echo "${orance}2)${default} Rimuovi eventuali pacchetti docker non compatibili"
         echo "${orance}3)${default} Aggiunta repository Docker"
         echo "${orance}4)${default} Installazione Docker"
@@ -266,7 +266,7 @@ menu_install (){
 
         case $choice in
         "1" )
-          confirm "Se hai docker gia' installato, questa opzione potrebbe sovrascrivere le tue configurazioni"
+          confirm "Se docker e' gia' installato, questa opzione potrebbe sovrascrivere le configurazioni attuali"
           if [[ $? -eq 0 ]]
           then
               echo "${orange}Rimozione dei pacchetti confluttuali docker....${default}"
@@ -315,11 +315,6 @@ menu_install (){
 }
 
 
-if [[ $# -ne 1 ]]
-then
-      echo "${orange}Uso: ./hackathon-setup install/remove${default}"
-      exit -1
-fi
 if [[ $1 == "install" ]]
 then
     menu_install
@@ -328,13 +323,18 @@ then
     menu_remove
 elif [[ $1 == "autoinstall" ]]
 then
-    install_lab_docker
+    if [[ $2 == "" ]]
+    then
+        echo "${orange}[Seleziona l'utente a cui aggiungere il permesso del lancio di docker nei sudoers] Uso: ./hackathon-setup autoinstall <utente>${default}"
+    else
+        install_lab_docker $2
+    fi
 elif [[ $1 == "autoremove" ]]
 then
     remove_lab
 else
-    echo "${orange}[Seleziona 'install' o 'remove'] Usage: ./hackathon-setup <install/remove>${default}"
+    echo "${orange}[Seleziona 'install' o 'remove'] Uso: ./hackathon-setup <install/remove>${default}"
     exit -1
 fi
 
-# In lab lanciare con "sudo --preserve-env=USER /tmp/hackathon-setup.sh autoinstall"
+# In lab lanciare con "sudo /path/to/hackathon-setup.sh autoinstall <utente-non-root>"
