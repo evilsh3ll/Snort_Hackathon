@@ -5,7 +5,7 @@ RUN apt update
 RUN apt install snort -y
 
 # Installing LAB dependencies
-RUN apt install net-tools inetutils-ping nano tcpdump vsftpd ssh vim
+RUN apt install net-tools inetutils-ping nano tcpdump vsftpd ssh vim -y
 
 # Copying hackathon evaluation script
 # TODO...
