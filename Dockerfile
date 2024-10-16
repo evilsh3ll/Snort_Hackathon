@@ -8,7 +8,10 @@ RUN apt install snort -y
 RUN apt install net-tools inetutils-ping nano tcpdump vsftpd ssh vim psmisc -y
 
 # Copying hackathon evaluation script
-# TODO...
+# TODO.
 
 # Testing installation
 RUN snort -V
+
+# Services start
+ENTRYPOINT service ssh start && service vsftpd start && bash
