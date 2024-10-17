@@ -11,7 +11,8 @@ RUN apt install net-tools inetutils-ping nano tcpdump vsftpd ssh vim psmisc git 
 # TODO...
 
 # Copying attack script
-ADD ./attack-script.sh /root
+ADD https://raw.githubusercontent.com/evilsh3ll/Snort_Hackathon/refs/heads/main/attack-script.sh /root
+ADD https://raw.githubusercontent.com/evilsh3ll/Snort_Hackathon/refs/heads/main/hackathon-evaluation /root
 
 # Testing installation
 RUN snort -V
