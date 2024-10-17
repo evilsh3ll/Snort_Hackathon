@@ -8,8 +8,8 @@ RUN apt install snort -y
 RUN apt install net-tools inetutils-ping nano tcpdump vsftpd ssh vim psmisc git psmisc nmap netcat-openbsd -y
 
 # Copying hackathon evaluation script
-#ADD ./attack-script.sh /root
-#RUN chmod +x ./attack-script.sh ./hackathon-evaluation
+#ADD ./hackathon-tools /root
+#RUN chmod +x ./hackathon-tools/attack/* ./hackathon-tools/evaluation/*
 
 # Testing installation
 RUN snort -V
@@ -20,6 +20,6 @@ ENTRYPOINT \
           service ssh start && \
           service vsftpd start && \
           git clone https://github.com/evilsh3ll/Snort_Hackathon \
-          chmod +x ./Snort_Hackathon/attack/* \
-          chmod +x ./Snort_Hackathon/evaluation/* \
+          chmod +x ./Snort_Hackathon/hackathon-tools/attack/* \
+          chmod +x ./Snort_Hackathon/hackathon-tools/evaluation/* \
           /bin/bash
