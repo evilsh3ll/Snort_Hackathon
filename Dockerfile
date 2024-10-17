@@ -19,7 +19,7 @@ WORKDIR /root
 ENTRYPOINT \
           service ssh start && \
           service vsftpd start && \
-          git clone https://github.com/evilsh3ll/Snort_Hackathon \
-          chmod +x ./Snort_Hackathon/hackathon-tools/attack/* \
-          chmod +x ./Snort_Hackathon/hackathon-tools/evaluation/* \
+          git clone https://github.com/evilsh3ll/Snort_Hackathon && \
+          chmod +x ./Snort_Hackathon/hackathon-tools/attack/* && \
+          chmod +x ./Snort_Hackathon/hackathon-tools/evaluation/* && \
           /bin/bash
