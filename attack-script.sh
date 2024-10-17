@@ -13,8 +13,5 @@ attacco_1 (){
 
 detection_1 (){
 
-  
+
 }
-
-
-
