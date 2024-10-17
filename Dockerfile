@@ -8,7 +8,10 @@ RUN apt install snort -y
 RUN apt install net-tools inetutils-ping nano tcpdump vsftpd ssh vim psmisc git psmisc nmap netcat-openbsd -y
 
 # Copying hackathon evaluation script
-# TODO.
+# TODO...
+
+# Copying attack script
+ADD ./attack-script.sh /root
 
 # Testing installation
 RUN snort -V
