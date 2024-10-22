@@ -5,7 +5,7 @@ RUN apt update
 RUN apt install snort -y
 
 # Installing LAB dependencies
-RUN apt install net-tools inetutils-ping nano tcpdump vsftpd ssh vim psmisc git psmisc nmap netcat-openbsd tmux -y
+RUN apt install net-tools inetutils-ping nano tcpdump vsftpd ssh vim psmisc git psmisc nmap netcat-openbsd tmux sshpass scapy -y
 
 # Copying hackathon evaluation script
 #ADD ./hackathon-tools /root
