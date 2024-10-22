@@ -1,4 +1,6 @@
 # HACKATHON
+
+### SVOLGIMENTO DELLA COMPETIZIONE
 Per superare un livello è necessario:
 - entrare nel container docker `sudo docker run -it hackathon:latest`
 - sniffare il traffico nell'interfaccia loopback (lo) per scoprire gli attacchi in corso (usa `tcpdump` con il parametro `-Xn`)
