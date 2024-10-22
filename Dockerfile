@@ -5,7 +5,7 @@ RUN apt update
 RUN apt install snort -y
 
 # Installing LAB dependencies
-RUN apt install net-tools inetutils-ping nano tcpdump vsftpd ssh vim psmisc git psmisc nmap netcat-openbsd tmux sshpass scapy -y
+RUN apt install net-tools inetutils-ping nano tcpdump vsftpd ssh curl vim psmisc git psmisc nmap netcat-openbsd tmux sshpass scapy apache2 -y
 
 # Copying hackathon evaluation script
 #ADD ./hackathon-tools /root
@@ -19,6 +19,7 @@ WORKDIR /root
 ENTRYPOINT \
           service ssh start && \
           service vsftpd start && \
+          service apache2 start && \
           git clone https://github.com/evilsh3ll/Snort_Hackathon && \
           chmod +x ./Snort_Hackathon/hackathon-tools/attack/* && \
           chmod +x ./Snort_Hackathon/hackathon-tools/evaluation/* && \
