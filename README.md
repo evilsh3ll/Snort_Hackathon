@@ -8,6 +8,8 @@ Per superare un livello è necessario:
 4. Avviare Snort in modalità `-A full` in modo che vengano generati i log completi (sare il parametro `-k none` per bypassare gli errori di checksum dei pacchetti in loopback)
 5. Eseguire la valutazione del livello e ottenere la password per accedere al livello successivo
 
+_**L'esecuzione di docker con i permessi corretti è supportata solo su sistemi ubuntu 24.04.1**_
+
 ### COMANDI UTILI
 **Avviare un livello**: `/root/Snort_Hackathon/hackathon-tools/attack/level1`
 
