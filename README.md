@@ -15,6 +15,8 @@ Per superare un livello è necessario:
 
 **Stoppare un livello prima del termine**: `killall bash sleep`
 
+**Avviare Snort in modalità log full:** `snort -q -l /var/log/snort -i lo -A full -c /etc/snort/snort.conf -d -k none`
+
 ### SETUP
   1. Controlla repository e raggiungibilità repository
   2. Avviare **hackathon-setup.sh**
